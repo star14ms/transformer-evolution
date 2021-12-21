@@ -3,7 +3,7 @@ sys.path.append("..")
 import os, argparse, datetime, time, re, collections, random
 from tqdm import tqdm, trange
 import numpy as np
-import wandb
+# import wandb
 
 import torch
 import torch.distributed as dist
@@ -48,7 +48,11 @@ def train_epoch(config, rank, epoch, model, criterion_lm, optimizer, scheduler, 
         for i, value in enumerate(train_loader):
             dec_inputs, _ = map(lambda v: v.to(config.device), value)
             labels_lm = dec_inputs[:, 1:].contiguous()
-
+            # print(len(dec_inputs))
+            # print(dec_inputs[0])
+            # for i in range(10):
+            #     print("문장: " + vocab.DecodeIdsWithCheck(dec_inputs[i].tolist()))
+            # exit()
             optimizer.zero_grad()
             outputs = model(dec_inputs)
             logits_lm = outputs[0]
@@ -156,6 +160,12 @@ if __name__ == '__main__':
     parser.add_argument('--warmup_steps', type=float, default=0, required=False,
                         help="warmup steps")
     args = parser.parse_args()
+
+    import sentencepiece as spm
+
+    vocab_file = "../kowiki.model" # data/
+    vocab = spm.SentencePieceProcessor()
+    vocab.load(vocab_file)
 
     if torch.cuda.is_available():
         args.n_gpu = torch.cuda.device_count() if args.gpu is None else 1

@@ -192,8 +192,8 @@ class GPT(nn.Module):
             "state_dict": self.state_dict()
         }, path)
     
-    def load(self, path):
-        save = torch.load(path)
+    def load(self, path, map_location):
+        save = torch.load(path, map_location=map_location)
         self.load_state_dict(save["state_dict"])
         return save["epoch"], save["loss"]
 

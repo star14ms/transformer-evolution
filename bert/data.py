@@ -10,7 +10,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from vocab import load_vocab
+# from vocab import load_vocab
+import sentencepiece as spm
+""" vocab 로드 """
+def load_vocab(file):
+    vocab = spm.SentencePieceProcessor()
+    vocab.load(file)
+    return vocab
 
 
 """ 마스크 생성 """
@@ -302,7 +308,7 @@ if __name__ == '__main__':
                         help="count of pretrain data")
     parser.add_argument("--n_seq", default=256, type=int, required=False,
                         help="sequence length")
-    parser.add_argument("--vocab", default="../kowiki.model", type=str, required=False,
+    parser.add_argument("--vocab", default="../data/kowiki.model", type=str, required=False,
                         help="vocab file")
     parser.add_argument("--mask_prob", default=0.15, type=float, required=False,
                         help="probility of mask")

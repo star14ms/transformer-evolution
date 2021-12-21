@@ -6,11 +6,21 @@ import sentencepiece as spm
 
 """ pretrain corpus 생성 """
 def build_corpus(infile, outfile):
+    # maxInt = sys.maxsize
+    # while True:
+    #     try:
+    #         csv.field_size_limit(maxInt)
+    #         break
+    #     except OverflowError:
+    #         maxInt = int(maxInt/10)
+            
+    # print("sys.maxsize:", maxInt)
+    
     csv.field_size_limit(sys.maxsize)
     SEPARATOR = u"\u241D"
-    df = pd.read_csv(infile, sep=SEPARATOR, engine="python")
+    df = pd.read_csv(infile, sep=SEPARATOR, engine="python", encoding="utf-8")
 
-    with open(outfile, "w") as f:
+    with open(outfile, "w", encoding="utf-8") as f:
         for index, row in df.iterrows():
             f.write(row["text"].lower())
             f.write("\n\n\n\n")
@@ -43,12 +53,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--prefix", default="kowiki", type=str, required=False,
                         help="vocab prefix 입니다.")
-    parser.add_argument("--vocab_size", default=8000, type=int, required=False,
+    parser.add_argument("--vocab_size", default=600, type=int, required=False,
                         help="생성할 vocab 수 입니다.")
     args = parser.parse_args()
 
     args.corpus = "data/kowiki.txt"
     if not os.path.isfile(args.corpus):
-        build_corpus("data/kowiki.csv", args.corpus)
+        build_corpus("data/kowiki_20211018.csv", args.corpus)
     build_vocab(args)
 
